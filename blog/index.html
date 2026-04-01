@@ -98,7 +98,7 @@
 
   <script src="../js/main.js"></script>
   <script>
-    fetch('posts.json')
+    fetch('/blog/posts.json?v=' + Date.now())
       .then(r => r.json())
       .then(posts => {
         const grid = document.getElementById('all-blog-grid');
