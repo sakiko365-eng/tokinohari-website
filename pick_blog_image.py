@@ -2,7 +2,7 @@
 """
 ブログ記事のアイキャッチ画像をランダム選択するスクリプト。
 posts.json を読み込み、使用頻度が低い画像を優先的に返す。
-counseling.jpg は使いすぎを防ぐため優先度を下げる。
+counseling.jpg / profile.jpg は使いすぎを防ぐため除外。
 
 使い方:
   python3 pick_blog_image.py
@@ -12,15 +12,35 @@ import json
 import random
 from pathlib import Path
 
-# 利用可能な全画像（counseling.jpgは最後尾＝最低優先度）
+# 利用可能な画像（テーマ別に分類）
 ALL_IMAGES = [
+    # 雰囲気・院内
+    "tokinohari-atmosphere-calm.jpg",
+    "tokinohari-atmosphere-relax.jpg",
+    "tokinohari-atmosphere-season.jpg",
+    "tokinohari-kojinshitsu-bed.jpg",
+    "tokinohari-kojinshitsu-light.jpg",
+    "tokinohari-naikan-room01.jpg",
+    "tokinohari-naikan-room03.jpg",
+    "tokinohari-naikan-detail01.jpg",
+    "tokinohari-detail-pillow.jpg",
+    "tokinohari-detail-towel.jpg",
+    # 施術
+    "tokinohari-harikyu-shoulder.jpg",
+    "tokinohari-harikyu-whole-body.jpg",
+    "tokinohari-harikyu-tools.jpg",
+    "tokinohari-ninkatsu-harikyu.jpg",
+    "tokinohari-biyoshin-face.jpg",
+    # 旧画像（サブ候補）
     "exterior.jpg",
-    "room.jpg",
+    "hero.jpg",
     "interior.jpg",
     "about.jpg",
-    "hero.jpg",
-    "profile.jpg",
-    "counseling.jpg",  # 使いすぎ防止のため最低優先度
+    "room.jpg",
+    # 除外（カウンセリング写真）
+    # "counseling.jpg"  ← 使用禁止
+    # "profile.jpg"     ← 使用禁止
+    # "tokinohari-counseling-room.jpg" ← カウンセリング写真のため除外
 ]
 
 POSTS_JSON = Path(__file__).parent / "blog" / "posts.json"
@@ -28,7 +48,6 @@ POSTS_JSON = Path(__file__).parent / "blog" / "posts.json"
 def pick_image():
     # posts.json から使用済み画像をカウント
     usage = {img: 0 for img in ALL_IMAGES}
-    usage["counseling.jpg"] = 3  # counseling.jpgにペナルティ（最初から3回使用済み扱い）
 
     if POSTS_JSON.exists():
         posts = json.loads(POSTS_JSON.read_text(encoding="utf-8"))
